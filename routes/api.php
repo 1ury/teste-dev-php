@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BuscaCnpjController;
+use App\Http\Controllers\FornecedorController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,7 +15,12 @@ use App\Http\Controllers\BuscaCnpjController;
 |
 */
 
-
-Route::apiResource('fornecedores', \App\Http\Controllers\FornecedorController::class);
+Route::prefix('fornecedores')->group(function () {
+    Route::get('/', [FornecedorController::class, 'index']);
+    Route::post('/', [FornecedorController::class, 'store']);
+    Route::get('/{fornecedor}', [FornecedorController::class, 'show']);
+    Route::put('/{fornecedor}', [FornecedorController::class, 'update']);
+    Route::delete('/{fornecedor}', [FornecedorController::class, 'destroy']);
+});
 
 Route::get('busca-cnpj/{cnpj}', [BuscaCnpjController::class, 'buscar']);
