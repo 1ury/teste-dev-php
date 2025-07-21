@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreFornecedorRequest;
 use App\Http\Requests\UpdateFornecedorRequest;
 use App\Repositories\FornecedorRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
 
 
 /**
@@ -40,7 +41,11 @@ class FornecedorController extends Controller
      */
     public function index(Request $request)
     {
-        $fornecedores = $this->repository->all($request);
+        $cacheKey = 'fornecedores_' . md5(json_encode($request->all()));
+
+        $fornecedores = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($request) {
+            return $this->repository->all($request);
+        });
         return response()->json($fornecedores);
     }
     /**
@@ -65,6 +70,9 @@ class FornecedorController extends Controller
     public function store(StoreFornecedorRequest $request)
     {
         $fornecedor = $this->repository->create($request->validated());
+        
+        // Limpa cache da listagem para garantir dados atualizados
+        Cache::flush();
         return response()->json($fornecedor, 201);
     }
     
@@ -80,7 +88,13 @@ class FornecedorController extends Controller
      */
     public function show(Fornecedor $fornecedor)
     {
-        return response()->json($this->repository->find($fornecedor));
+        $cacheKey = "fornecedor_{$fornecedor->id}";
+
+        $data = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($fornecedor) {
+            return $this->repository->find($fornecedor);
+        });
+
+        return response()->json($data);
     }
     /**
      * @OA\Put(
@@ -105,6 +119,13 @@ class FornecedorController extends Controller
     {
         $dados = $request->validated();
         $fornecedor = $this->repository->update($dados, $fornecedor);
+
+        // Atualiza o cache individual
+        Cache::put("fornecedor_{$fornecedor->id}", $fornecedor, now()->addMinutes(10));
+
+        // Limpa cache da listagem
+        Cache::flush();
+
         return response()->json($fornecedor);
     }
      /**
@@ -120,6 +141,11 @@ class FornecedorController extends Controller
     public function destroy(Fornecedor $fornecedor)
     {
         $this->repository->delete($fornecedor);
+
+        // Remove cache específico
+        Cache::forget("fornecedor_{$fornecedor->id}");
+        Cache::flush(); // Limpa a listagem
+
         return response()->json(['mensagem' => 'Fornecedor removido com sucesso.']);
     }
 }
