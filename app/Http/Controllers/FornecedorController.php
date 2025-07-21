@@ -64,7 +64,7 @@ class FornecedorController extends Controller
      *         @OA\JsonContent(
      *             required={"nome","documento"},
      *             @OA\Property(property="nome", type="string", example="Empresa XYZ"),
-     *             @OA\Property(property="documento", type="string", example="12345678000100"),
+     *             @OA\Property(property="documento", type="string", example="04252011000110"),
      *             @OA\Property(property="telefone", type="string", example="11999999999"),
      *             @OA\Property(property="email", type="string", example="contato@empresa.com"),
      *             @OA\Property(property="endereco", type="string", example="Rua A, 123")

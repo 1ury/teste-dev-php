@@ -20,7 +20,7 @@ class UpdateFornecedorRequest extends FormRequest
                 'sometimes',
                 'required',
                 'cpf_ou_cnpj',
-                'unique:fornecedores,documento,' . $id
+                'unique:fornecedors,documento,' . $id
             ],
             'telefone' => 'nullable|string|max:20',
             'email' => 'nullable|email',

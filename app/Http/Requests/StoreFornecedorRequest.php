@@ -28,7 +28,7 @@ class StoreFornecedorRequest extends FormRequest
             'documento' => [
                 'required',
                 'cpf_ou_cnpj',
-                'unique:fornecedores,documento',
+                'unique:fornecedors,documento',
             ],
             'telefone' => 'nullable|string|max:20',
             'email' => 'nullable|email',

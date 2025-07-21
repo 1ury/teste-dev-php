@@ -167,7 +167,7 @@
                                     },
                                     "documento": {
                                         "type": "string",
-                                        "example": "12345678000100"
+                                        "example": "04252011000110"
                                     },
                                     "telefone": {
                                         "type": "string",
