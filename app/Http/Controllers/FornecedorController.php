@@ -7,7 +7,7 @@ use App\Models\Fornecedor;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreFornecedorRequest;
 use App\Http\Requests\UpdateFornecedorRequest;
-use App\Services\CnpjService;
+use App\Repositories\FornecedorRepositoryInterface;
 
 
 /**
@@ -18,6 +18,13 @@ use App\Services\CnpjService;
  */
 class FornecedorController extends Controller
 {
+    protected $repository;
+
+    public function __construct(FornecedorRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * @OA\Get(
      *     path="/api/fornecedores",
@@ -33,25 +40,7 @@ class FornecedorController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Fornecedor::query();
-
-        // Filtros
-        if ($request->filled('nome')) {
-            $query->where('nome', 'like', '%' . $request->nome . '%');
-        }
-        if ($request->filled('documento')) {
-            $query->where('documento', $request->documento);
-        }
-
-        // Ordenação
-        $sortBy = $request->get('sort_by', 'id');
-        $sortDir = $request->get('sort_dir', 'desc');
-        $query->orderBy($sortBy, $sortDir);
-
-        // Paginação
-        $perPage = $request->get('per_page', 10);
-        $fornecedores = $query->paginate($perPage);
-
+        $fornecedores = $this->repository->all($request);
         return response()->json($fornecedores);
     }
     /**
@@ -75,7 +64,7 @@ class FornecedorController extends Controller
      */
     public function store(StoreFornecedorRequest $request)
     {
-        $fornecedor = Fornecedor::create($request->validated());
+        $fornecedor = $this->repository->create($request->validated());
         return response()->json($fornecedor, 201);
     }
     
@@ -91,7 +80,7 @@ class FornecedorController extends Controller
      */
     public function show(Fornecedor $fornecedor)
     {
-        return response()->json($fornecedor);
+        return response()->json($this->repository->find($fornecedor));
     }
     /**
      * @OA\Put(
@@ -114,7 +103,8 @@ class FornecedorController extends Controller
      */
     public function update(UpdateFornecedorRequest  $request, Fornecedor $fornecedor)
     {
-        $fornecedor->update($request->validated());
+        $dados = $request->validated();
+        $fornecedor = $this->repository->update($dados, $fornecedor);
         return response()->json($fornecedor);
     }
      /**
@@ -129,7 +119,7 @@ class FornecedorController extends Controller
      */
     public function destroy(Fornecedor $fornecedor)
     {
-        $fornecedor->delete();
+        $this->repository->delete($fornecedor);
         return response()->json(['mensagem' => 'Fornecedor removido com sucesso.']);
     }
 }
