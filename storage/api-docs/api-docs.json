@@ -1,0 +1,316 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Fornecedores",
+        "description": "Documentação da API de fornecedores",
+        "contact": {
+            "email": "seu-email@exemplo.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/busca-cnpj/{cnpj}": {
+            "get": {
+                "tags": [
+                    "Consulta Externa"
+                ],
+                "summary": "Buscar dados públicos de um CNPJ na BrasilAPI",
+                "description": "Consulta informações públicas de um CNPJ válido utilizando a BrasilAPI.",
+                "operationId": "buscarCnpj",
+                "parameters": [
+                    {
+                        "name": "cnpj",
+                        "in": "path",
+                        "description": "Número do CNPJ (apenas números, sem formatação)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "19131243000197"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados do CNPJ retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "razao_social": {
+                                            "type": "string",
+                                            "example": "EMPRESA EXEMPLO LTDA"
+                                        },
+                                        "nome_fantasia": {
+                                            "type": "string",
+                                            "example": "EXEMPLO COMÉRCIO"
+                                        },
+                                        "cnpj": {
+                                            "type": "string",
+                                            "example": "19131243000197"
+                                        },
+                                        "cep": {
+                                            "type": "string",
+                                            "example": "01001-000"
+                                        },
+                                        "municipio": {
+                                            "type": "string",
+                                            "example": "São Paulo"
+                                        },
+                                        "uf": {
+                                            "type": "string",
+                                            "example": "SP"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CNPJ não encontrado ou inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "erro": {
+                                            "type": "string",
+                                            "example": "CNPJ inválido ou não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/fornecedores": {
+            "get": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Listar fornecedores",
+                "operationId": "05856d1f4889a1929d1cca01a996c31f",
+                "parameters": [
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar por nome",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "documento",
+                        "in": "query",
+                        "description": "Filtrar por documento",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Campo de ordenação",
+                        "schema": {
+                            "type": "string",
+                            "example": "nome"
+                        }
+                    },
+                    {
+                        "name": "sort_dir",
+                        "in": "query",
+                        "description": "Direção da ordenação",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de fornecedores paginada"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Criar fornecedor",
+                "operationId": "3860e06a108de3184ff5cbdcd548b10f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome",
+                                    "documento"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Empresa XYZ"
+                                    },
+                                    "documento": {
+                                        "type": "string",
+                                        "example": "04252011000110"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "11999999999"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "contato@empresa.com"
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua A, 123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Fornecedor criado com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/fornecedores/{id}": {
+            "get": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Exibir fornecedor",
+                "operationId": "8ffc26937cfcdc765d9bf0253a1c70ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do fornecedor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados do fornecedor"
+                    },
+                    "404": {
+                        "description": "Fornecedor não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Atualizar fornecedor",
+                "operationId": "019be865aed02753760fca8f4a17233e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do fornecedor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Nome atualizado"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "11988888888"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "atualizado@email.com"
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua Nova, 456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Fornecedor atualizado com sucesso"
+                    },
+                    "404": {
+                        "description": "Fornecedor não encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Remover fornecedor",
+                "operationId": "f6c79edee27a08713e1c1074686502b7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do fornecedor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fornecedor removido com sucesso"
+                    },
+                    "404": {
+                        "description": "Fornecedor não encontrado"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Consulta Externa",
+            "description": "Endpoints para buscar informações públicas de CNPJ usando a BrasilAPI"
+        },
+        {
+            "name": "Fornecedores",
+            "description": "Operações relacionadas aos fornecedores"
+        }
+    ]
+}
